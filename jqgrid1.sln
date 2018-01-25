@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jqgrid1", "jqgrid1\jqgrid1.csproj", "{B3331911-83AC-4ADE-B78B-6C67570D0BB0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FEF67949-F422-42C7-B2FC-94D7AF9B76FC} = {FEF67949-F422-42C7-B2FC-94D7AF9B76FC}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KDAL", "KDAL\KDAL.csproj", "{FEF67949-F422-42C7-B2FC-94D7AF9B76FC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3331911-83AC-4ADE-B78B-6C67570D0BB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3331911-83AC-4ADE-B78B-6C67570D0BB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3331911-83AC-4ADE-B78B-6C67570D0BB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3331911-83AC-4ADE-B78B-6C67570D0BB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEF67949-F422-42C7-B2FC-94D7AF9B76FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEF67949-F422-42C7-B2FC-94D7AF9B76FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEF67949-F422-42C7-B2FC-94D7AF9B76FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEF67949-F422-42C7-B2FC-94D7AF9B76FC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

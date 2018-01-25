@@ -1,0 +1,373 @@
+﻿
+@{
+    ViewBag.Title = "index";
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>广州力恒盛电子有限公司 </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <link rel="stylesheet" href="~/styles/layout.css" type="text/css" />
+    <link href="~/styles/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+    <link href="~/styles/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/JQGrid/jquery-1.11.0.min.js"></script>
+    <script src="~/Scripts/JQGrid/jquery.jqGrid.min.js"></script>
+    <script src="~/Scripts/JQGrid/grid.locale-cn.js"></script>
+    <script src="~/Scripts/layui/layui.all.js"></script>
+</head>
+<body>
+    
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <div class="layui-form-label">报检单号:</div>
+            <div class="layui-input-block">
+                <input type="text" name="code" id="code" required lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input" style="width:300px">
+            </div>
+        </div>
+
+        <div class="layui-form-item" id="pcodediv">
+            <div class="layui-form-label">材料编码:</div>
+            <div class="layui-input-block">
+                <input type="text" name="pcode" id="pcode" required lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input" style="width:380px">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-form-label">材料名称:</div>
+            <div class="layui-input-block">
+                <input type="text" name="desc" id="desc" required lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input" style="width:380px">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-form-label">规格:</div>
+            <div class="layui-input-block">
+                <input type="text" id="size" required lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input" style="width:300px">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-form-label">单位:</div>
+            <div class="layui-input-block">
+                <input type="text" id="unit" required lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input" style="width:80px">
+            </div>
+        </div>
+
+        <div class="layui-row">
+            <div class="layui-col-xs3">
+                <div class="layui-form-item">
+                    <div class="layui-form-label">采购数:</div>
+                    <div class="layui-input-block">
+                        <input type="text" id="purchaseamount" required lay-verify="required" readonly="readonly" autocomplete="off" class="layui-input" style="width:80px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3">
+                <div class="layui-form-item">
+                    <div class="layui-form-label">报检数:</div>
+                    <div class="layui-input-block">
+                        <input type="text" name="checkamount" id="checkamount" required lay-verify="required" autocomplete="off" class="layui-input" style="width:80px" onkeyup="onlyNumber(this)" onblur="calCheckrate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3">
+                <div class="layui-form-item">
+                    <div class="layui-form-label">抽检率:</div>
+                    <div class="layui-input-block">
+                        <input type="text" name="checkrate" id="checkrate" readonly="readonly" required lay-verify="required" autocomplete="off" class="layui-input" style="width:80px">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3">
+            </div>
+        </div>
+
+        <div class="layui-row">
+
+            <div class="layui-col-xs3">
+                <div class="layui-form-item">
+                    <div class="layui-form-label">报检合格数:</div>
+                    <div class="layui-input-block">
+                        <input type="text" name="passamount" id="passamount" required lay-verify="required" autocomplete="off" class="layui-input" style="width:80px" onkeyup="onlyNumber(this)" onblur="inputCheckamount()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3">
+                <div class="layui-form-item">
+                    <div class="layui-form-label">判定合格数:</div>
+                    <div class="layui-input-block">
+                        <input type="text" name="finalpassamount" id="finalpassamount" required lay-verify="required" autocomplete="off" class="layui-input" style="width:80px" onkeyup="onlyNumber(this)" onblur="calFinalpassRate()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-xs3">
+                <div class="layui-form-item">
+                    <div class="layui-form-label">判定合格率:</div>
+                    <div class="layui-input-block">
+                        <input type="text" name="passrate" id="passrate" readonly="readonly" required lay-verify="required" autocomplete="off" class="layui-input" style="width:80px">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="layui-row" style="margin-right:10px">
+            <div class="layui-col-xs12">
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">质检记录:</label>
+                    <div class="layui-input-block">
+                        <textarea name="qcnote" id="qcnote" placeholder="由质检员填写" class="layui-textarea"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-col-xs12">
+            <div class="layui-form-item">
+                <div class="layui-input-block" id="saveblock">
+                    <button class="layui-btn" id="saveBtn" lay-submit lay-filter="Saveqcitem">保存检验数据</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+     <div class="layui-row">
+         <div class="layui-col-xs10 ">
+                <div class="layui-form-item layui-form-text">
+                 <label class="layui-form-label">审核记录:</label>
+                 <div class="layui-input-block">
+                    <textarea name="directornote" id="directornote" placeholder="由质检主管填写" class="layui-textarea" style="height:100px"></textarea>
+                </div>
+           </div>
+         </div>
+
+         <div class="layui-col-xs2 ">
+             <!--<div class="layui-form-item">
+                 <div class="layui-input-block">
+                     <button class="layui-btn" id="saveDirectornoteBtn" lay-submit lay-filter="Savedirectornote" style="margin-left:0px">保存质检意见</button>
+                 </div>
+             </div>-->
+             <div class="grid-demo grid-demo-bg1">
+                         <button class="layui-btn" id="saveDirectornoteBtn" lay-submit lay-filter="Savedirectornote" style="width:100%;height:100px">保存质检意见</button>
+             </div>
+         </div>
+   </div>
+
+    <div class="layui-row">
+        <div class="layui-col-xs12">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">全质办记录:</label>
+                <div class="layui-input-block">
+                    <textarea name="allqcdepnote" id="allqcdepnote" placeholder="由全质办填写" class="layui-textarea"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        
+    <script type="text/javascript">
+
+        $.ajax({
+            type: "GET",
+            url: "Editqcitem/GetcurrentUser",
+            async: false,
+            datatype: "JSON",
+            data: {
+            },
+            success: function (data) {
+                var resdata = eval("(" + data + ")");
+                switch(resdata.role){
+                    case '1':
+                        $("#directornote").attr("readonly", "readonly");
+                        break;
+                    case '0':
+                        $("#checkamount").attr("readonly", "readonly");
+                        $("#checkrate").attr("readonly", "readonly");
+                        $("#passamount").attr("readonly", "readonly");
+                        $("#finalpassamount").attr("readonly", "readonly");
+                        $("#passrate").attr("readonly", "readonly");
+                        $("#qcnote").attr("readonly", "readonly");
+                        break;
+                    case '2':
+                        $("#checkamount").attr("readonly", "readonly");
+                        $("#checkrate").attr("readonly", "readonly");
+                        $("#passamount").attr("readonly", "readonly");
+                        $("#finalpassamount").attr("readonly", "readonly");
+                        $("#passrate").attr("readonly", "readonly");
+                        $("#qcnote").attr("readonly", "readonly");
+                        $("#directornote").attr("readonly", "readonly");
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
+        $(document).ready(function () {
+            var selid = parent.$("#bjformtable").jqGrid('getGridParam', 'selrow');
+            var bjformdata =parent.$("#bjformtable").jqGrid('getRowData', selid);
+            var bjformcode = bjformdata.code.substr(0,12);
+            var bjformtype = bjformdata.type;
+
+            selid = parent.$("#bjformdetails").jqGrid('getGridParam', 'selrow');
+            bjformdata = parent.$("#bjformdetails").jqGrid('getRowData', selid);
+            if (bjformtype == "材料") {
+                bjformitem = bjformdata.pcode;
+            } else {
+                bjformitem = bjformdata.pdesc;
+            }
+
+
+            var url = "Editqcitem/GetqcitemDetail?bjformcode="+ bjformcode+"&bjformtype="+bjformtype+"&bjformitem="+bjformitem;
+
+            $.getJSON(url, function (data) {
+                $.each(data, function (i, value) {
+                    $("#code").val(value.code);
+                    if (bjformtype == "材料") {
+                        $("#pcode").val(value.pcode);
+                    } else {
+                        $("#pcodediv").remove();
+                    }
+                    $("#desc").val(value.Description);
+                    $("#size").val(value.Size);
+                    $("#unit").val(value.Unit);
+                    $("#purchaseamount").val(value.purchaseamount);
+                    $("#checkamount").val(value.checkamount);
+                    $("#passamount").val(value.passamount);
+                    $("#finalpassamount").val(value.finalpassamount);
+                    $("#checkrate").val(value.checkrate * 100 + "%");
+                    $("#passrate").val(value.passrate * 100 + "%");
+                    $("#qcnote").val(value.staffnote);
+                    $("#directornote").val(value.directornote);
+                    var form = layui.form;
+                    form.render();
+                });
+            });
+
+            var selid =parent.$("#bjformtable").getGridParam('selrow');
+            if (parent.$('#bjformtable').jqGrid('getCell', selid, 'status') == "存档") {
+                $("#directornote").attr("readonly", "readonly");
+                $("#qcnote").attr("readonly", "readonly");
+                $("#checkamount").attr("readonly", "readonly");
+                $("#passamount").attr("readonly", "readonly");
+                $("#finalpassamount").attr("readonly", "readonly");
+                $("#saveBtn").attr("disabled", "disabled");
+                $("#saveblock").attr("hidden", "hidden");
+            }
+
+        });
+
+        layui.use('form', function () {
+            var form = layui.form;
+            form.render();
+            form.on('submit(Saveqcitem)', function (data) {
+
+                $.ajax({
+                    type: "GET",
+                    url: "Editqcitem/Updateqcitem",
+                    async:false,
+                    datatype: "JSON",
+                    data: {
+                        submit: JSON.stringify(data.field)
+                    },
+                    success: function (data, textStatus) {
+                        if (data == "updateqcitemsuccess") {
+                            alert("成功保存");
+                        } else {
+                            alert("保存有误");
+                        }
+                        var selid = parent.$("#bjformtable").jqGrid('getGridParam', 'selrow');
+                        var bjformdata = parent.$("#bjformtable").jqGrid('getRowData', selid);
+                        var bjformcode = bjformdata.code;
+                        var bjformtype = bjformdata.type;
+
+                        parent.$("#bjformdetails").jqGrid('clearGridData');
+                        parent.$("#bjformdetails").jqGrid('setGridParam', { url: "QcProcess/GetBjformDetail?code=" + bjformcode+"&type="+bjformtype, page: 1 }).trigger('reloadGrid');
+                        parent.layer.closeAll();
+                    }
+                });
+            });
+        });
+
+
+        function calCheckrate() {
+            var purval =parseFloat($("#purchaseamount").val());
+            var checkval =parseFloat($("#checkamount").val());
+            
+
+            if (isNaN(checkval)) {
+                $("#checkrate").val("");
+                return;
+            }
+
+
+            if (checkval > purval) {
+                alert("报检数不能大于采购数");
+                $("#checkrate").val("");
+                return;
+            } 
+
+            if (!isNaN(checkval)) {
+                $("#checkrate").val(Math.round(checkval / purval * 10000) / 100.00 + "%");
+            }
+
+
+        };
+
+        function inputCheckamount() {
+            var checkval = parseFloat($("#checkamount").val());
+            if (isNaN(checkval)) {
+                alert("请先输入报检数");
+                return;
+            }
+
+            var passval = parseFloat($("#passamount").val());
+            if (isNaN(passval)) {
+                return;
+            }
+
+            if (passval > checkval) {
+                alert("合格数量不能大于抽检数量");
+                return;
+            }
+        };
+
+        function calFinalpassRate() {
+            var purval = parseFloat($("#purchaseamount").val());
+            var finalpassval = parseFloat($("#finalpassamount").val());
+
+            if (finalpassval > purval) {
+                alert("判定合格数量不能超过采购数量");
+                return;
+            }
+
+
+            if (!isNaN(finalpassval)) {
+                $("#passrate").val(Math.round(finalpassval / purval * 10000) / 100.00 + "%");
+            }
+
+
+        };
+
+
+        function onlyNumber(obj) {
+            var t = obj.value.charAt(0);
+            obj.value = obj.value.replace(/[^\d\.]/g, '');
+            obj.value = obj.value.replace(/^\./g, '');
+            obj.value = obj.value.replace(/\.{2,}/g, '.');
+            obj.value = obj.value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+            if (t == '-') { obj.value = '-' + obj.value; }
+        }
+
+    </script>
+</body>
+</html>

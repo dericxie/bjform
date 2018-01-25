@@ -1,0 +1,668 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>广州力恒盛电子有限公司 </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <link rel="stylesheet" href="~/styles/layout.css" type="text/css" />
+    <link href="~/styles/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+    <link href="~/styles/select2.min.css" rel="stylesheet" />
+    <script src="~/Scripts/JQGrid/jquery-1.11.0.min.js"></script>
+    <script src="~/Scripts/JQGrid/jquery.jqGrid.min.js"></script>
+    <script src="~/Scripts/JQGrid/grid.locale-cn.js"></script>
+    <script src="~/Scripts/select2/select2.min.js"></script>
+    <script src="~/Scripts/layui/layui.js"></script>
+</head>
+
+<body id="top">
+    <!-- ####################################################################################################### -->
+    <div class="wrapper">
+        <div id="header">
+            <div class="fl_left">
+                <h1><a href="#"><strong>力</strong>恒盛电子 <strong>电子报检单管理系统</strong></a></h1>
+                <p>广州力恒盛电子有限公司</p>
+            </div>
+            <br class="clear" />
+        </div>
+    </div>
+    <div class="wrapper col2">
+        <div id="topbar">
+            <div id="topnav">
+                <ul>
+                    <li class="active"><a href="">登陆：</a></li>
+                    <li class="active"><input type="text" id="loginuser" readonly="readonly" /></li>
+                    <li class="active"></li>
+                    <li class="active"></li>
+                    <li class="active"></li>
+                    <li class="active"></li>
+                    <li class="active">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                    <li class="active"><input type="button" id="LogoutBtn" value="退出" onclick="logout()" style="width:100px" /></li>
+                </ul>
+            </div>
+            <div id="search">
+            </div>
+            <br class="clear" />
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <div class="container">
+            <div class="content">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报检单月份</label>
+                    <div class="layui-input-inline">
+                        <input type="text" class="layui-input" id="selbjformdate" placeholder="yyyy-MM" style="width:100px" value="2018-01">
+                    </div>
+                </div>
+                <table id="bjformtable"></table>
+                <div id="bjformtablePage"></div>
+                <input type="button" id="addqcform" value="新建报检单" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" id="editbjformBtn" value="编辑报检单" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" id="delbjformBtn" value="删除报检单" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" id="sendtoqcBtn" value="报检" style="width:200px;background-color:yellow" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="button" id="printbjformBtn" value="打印报检单" style="width:200px;background-color:red" />
+            </div>
+            <div id="search">
+            </div>
+            <br />
+            <div class="content">
+                <table id="bjformdetails"></table>
+                <div id="bjformdetailspager"></div>
+                <input type="button" id="delbjformdetailBtn" value="删除报检材料" onclick="delbjformdetail()" />
+            </div>
+            <br />
+            <br />
+                <fieldset style="width:550px;margin:0px">
+                    <legend>添加待检测材料或产品</legend>
+                    <table id="itemtable">
+                        <tbody>
+                            <tr id="searchrow">
+                                <td><div class="layui-form-label">搜索材料</div></td>
+                                <td><select class='preBJproductSelect' name='pcode' id='BJproduct' style='width:300px' onchange='changeData()'></select></td>
+                            </tr>
+                            <tr id="pcoderow">
+                                <td><div class="layui-form-label">材料编码</div></td>
+                                <td><div class="layui-input-block"><input type="text" id="pcode" readonly="readonly" /></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="layui-form-label">材料名称</div></td>
+                                <td><div class="layui-input-block"><input type="text" id="pdesc" readonly="readonly" /></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="layui-form-label">规格</div></td>
+                                <td><div class="layui-input-block"><input type="text" id="size" readonly="readonly" /></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="layui-form-label">单位</div></td>
+                                <td><div class="layui-input-block"><input type="text" id="unit" readonly="readonly" /></div></td>
+                            </tr>
+                            <tr>
+                                <td><div class="layui-form-label">采购数量</div></td>
+                                <td><div class="layui-input-block"><input type="text" id="checkamount" onkeyup="onlyNumber(this)" onblur="onlyNumber(this)" /></div></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><input type="button" id="AddBjProductBtn" value="添加材料" onclick="AddBjProduct()" /></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </fieldset>
+            <br class="clear" />
+        </div>
+    </div>
+
+    <div class="wrapper col8">
+        <div id="copyright">
+            <p class="fl_left">Guangzhou LHS Electric Co.,Ltd Copyright &copy; 2017 - All Rights Reserved - <a href="#">By Deric Xie</a></p>
+            <br class="clear" />
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var href = window.document.location.href;
+            var replacetxt = "Qcform";
+            href = href.replace(replacetxt, "");
+
+
+            layui.use('laydate', function () {
+                var laydate = layui.laydate;
+                laydate.render({
+                    elem: '#selbjformdate',
+                    type: 'month',
+                    theme: '#6495ED',
+                    done: function (value, date) {
+                    }
+                });
+
+            });
+
+
+
+
+            var url = "/QcProcess/GetcurrentUser";
+
+            $.ajax({
+                type: "GET",
+                url: "QcForm/GetcurrentUser",
+                async: false,
+                datatype: "JSON",
+                data: {
+                },
+                success: function (data) {
+                    var resdata = eval("(" + data + ")");
+                    $("#loginuser").val(resdata.username + "  " + resdata.chinesename);
+                }
+            });
+
+
+
+
+            function alarmFormatter(cellvalue, options, rowdata) {
+                var returnstr;
+                switch (rowdata.status) {
+                    case "新建":
+                        returnstr = ' <img src="' + href + 'icons/add.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                        break;
+                    case "存档":
+                        returnstr = ' <img src="' + href + 'icons/87-drawer.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                        break;
+                    case "检验中":
+                        returnstr = ' <img src="' + href + 'icons/medium_priority.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                        break;
+                    default:
+                        returnstr = ' <img src="' + href + 'icons/67-info.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                }
+                return returnstr
+            };
+
+            function setBjfromType(cellvalue, options, rowdata) {
+                var returnstr;
+                switch (rowdata.type) {
+                    case "80":
+                        returnstr = "材料";
+                        break;
+                    case "82":
+                        returnstr ="杂项";
+                        break;
+                    default:
+                        returnstr = rowdata.type;
+                        break;
+                }
+                return returnstr;
+            }
+
+            $("#bjformtable").jqGrid({
+                url: 'Qcform/GetBjFrominfo',
+                datatype: "json",
+                mtype: 'GET',
+                colNames: ['   ','优先级','报检单号','类别', '制单人', '采购员', '供货单位', '质检主管', '质检员', '状态', '生成日期'],
+                colModel: [
+                { name: 'icon', index: 'icon', width: 30, align: "center", sortable: false, editable: false, formatter: alarmFormatter },
+                { name: 'urgent', index: 'urgent', edittype:'select', editable: false, hidden: true, editoptions: { value: "0:普通;1:紧急"} },
+                {
+                    name: 'code', index: 'code', width: 180, edittype: 'select', editable: true,
+                    editoptions: {
+                        dataUrl: "Qcform/GenQCformCode"
+                    },
+                    cellattr:setCodeUrgentRed
+                },
+                { name: 'type', index: 'type', width: 50, edittype: "select", editable: false, editoptions: { value:"80:材料;82:杂项" },formatter:setBjfromType },
+                { name: 'maker', index: 'make', width: 100, edittype: "select", editable: true, editoptions: { dataUrl: "Qcform/GetUsername" } },
+                { name: 'buyer', index: 'buyer', width: 50, editable: true },
+                { name: 'supplier', index: 'supplier', width: 180, editable: true },
+                { name: 'qcmanager', index: 'qcmanager', width: 80, editable: false },
+                { name: 'qcstaff', index: 'qcstaff', width: 80, editable: false },
+                { name: 'status', index: 'status', width: 50, edittype: "select", editable: true, editoptions: { dataUrl: "Qcform/GetStatus" } },
+                { name: 'makedate', index: 'makedate', width: 180, edittype: "select", editable: true, editoptions: { dataUrl: "Qcform/GetMakeDate" } }
+                ],
+                onSelectRow: function (ids) {
+                    if (ids != null) {
+                        var bjformdata = $("#bjformtable").jqGrid('getRowData', ids);
+                        var bjformcode = bjformdata.code;
+                        var bjformtype = bjformdata.type;
+                        $("#bjformdetails").jqGrid('setGridParam', { url: "Qcform/GetBjformDetail?code=" + bjformcode + "&type=" + bjformtype, page: 1 });
+                        $("#bjformdetails").jqGrid('setCaption', "报检单号:" + bjformcode).trigger('reloadGrid');
+                        if (bjformtype == "杂项") {
+                            $("#bjformdetails").hideCol('pcode').trigger('reloadGrid');
+                            $("#searchrow").hide();
+                            $("#pcoderow").hide();
+                            $("#pdesc").removeAttr("readonly");
+                            $("#size").removeAttr("readonly");
+                            $("#unit").removeAttr("readonly");
+                        } else {
+                            $("#bjformdetails").showCol('pcode').trigger('reloadGrid');
+                            $("#searchrow").show();
+                            $("#pcoderow").show();
+                            $("#pdesc").attr("readonly", "readonly");
+                            $("#size").attr("readonly", "readonly");
+                            $("#unit").attr("readonly", "readonly");
+                        }
+                    }
+                },
+
+
+                rowNum: 10,
+                loadonce: true,
+                pager: '#bjformtablePage',
+                viewrecords: true,
+                caption: "报检单列表",
+                editurl: 'Qcform/EditDataFromStockinfo'
+            });
+
+            $("#addqcform").click(function () {
+                $("#bjformtable").setColProp('urgent', { editable: true, hidden: false });
+                $("#bjformtable").setColProp('type', { editable: true });
+                $("#bjformtable").setColProp('code', { editable: true });
+                $("#bjformtable").setColProp('maker', { editable: true });
+                $("#bjformtable").setColProp('makedate', { editable: true });
+                $("#bjformtable").setColProp('status', { editable: true });
+
+                $("#bjformtable").jqGrid('editGridRow', "new", {
+                    width: 600,
+                    reloadAfterSubmit: false,
+                    closeAfterAdd: true
+                }
+
+                );
+
+                $("#bjformtable").setColProp('urgent', { hidden: true });
+                $("#bjformtable").setColProp('code', { editable: false });
+
+
+            });
+
+            function setCodeUrgentRed(rowId, val, rawObject, cm, rdata) {
+                if (rawObject.urgent == '1') {
+                    return "style='color:red'";
+                }
+            };
+
+
+            $("#editbjformBtn").click(function () {
+                var selid = $("#bjformtable").jqGrid('getGridParam', 'selrow');
+
+                if (selid == undefined) {
+                    alert("请选择报检单");
+                    return;
+                }
+
+                var status = $("#bjformtable").getCell(selid, "status");
+
+                if (status != "新建") {
+                    alert("只有新建状态的报检单才可编辑");
+                    retrun;
+                }
+
+                $("#bjformtable").setColProp('code', { editable: { value: "True:False" } });
+                $("#bjformtable").setColProp('maker', { editable: { value: "True:False" } });
+                $("#bjformtable").setColProp('makedate', { editable: { value: "True:False" } });
+                $("#bjformtable").setColProp('status', { editable: { value: "True:False" } });
+                $("#bjformtable").jqGrid('editGridRow', selid, {
+                    onclickSubmit: function (params, postdata) {
+                        var dgrv = $("#bjformtable").getGridParam('selrow');
+                        var code = $("#bjformtable").getCell(dgrv, "code");
+                        return { "code": code };
+                    },
+                    closeAfterEdit: true,
+                    reloadAfterSubmit: false
+                });
+            });
+
+            $("#delbjformBtn").click(function () {
+                var selid = $("#bjformtable").jqGrid('getGridParam', 'selrow');
+
+                if (selid == null) {
+                    alert("请选择报检单");
+                    return;
+                }
+                var dgrv = $("#bjformtable").getGridParam('selrow');
+                var status = $("#bjformtable").getCell(dgrv, "status");
+                var bjformcode = $("#bjformtable").getCell(dgrv, "code");
+                if (status != "新建") {
+                    alert("只有新建状态的报检单才可删除");
+                    retrun;
+                }
+
+                if (confirm("请确认删除报检单") == true) {
+                    $.ajax({
+                        type: "GET",
+                        url: "Qcform/DelBjForm",
+                        datatype: "JSON",
+                        data: {
+                            code: bjformcode,
+                        },
+                        success: function (data, textStatus) {
+                            if (data == "已删除报检单") {
+                                $("#bjformtable").jqGrid('delRowData', dgrv);
+                                $("#bjformdetails").jqGrid('clearGridData');
+                            }
+                        }
+                    });
+
+                } else {
+                    return;
+                }
+
+
+            });
+
+
+            $("#sendtoqcBtn").click(function () {
+                var selid = $("#bjformtable").getGridParam('selrow');
+
+                if (selid == null) {
+                    alert("请选择报检单");
+                    return;
+                }
+
+                var oldstatus = $("#bjformtable").getCell(selid, "status");
+
+                if (oldstatus != "新建") {
+                    alert("只能报检新建状态的报检单");
+                    return;
+                }
+                var bjformcode = $("#bjformtable").getCell(selid, "code");
+
+
+
+                if (confirm("请确认向质检部提交报检单。单号:" + bjformcode) == true) {
+                    $.ajax({
+                        type: "GET",
+                        url: "Qcform/BjFormChgStatus",
+                        datatype: "JSON",
+                        data: {
+                            code: bjformcode,
+                            chgstatus: "1"    //状态值变为“待检”状态
+                        },
+                        success: function (data, textStatus) {
+                            if (data == "success") {
+                                $("#bjformtable").setCell(selid, "status", "待检");
+                                $("#bjformtable").setCell(selid, "icon", "<img src='/icons/67-info.png' id='img" + selid + "'  style='width:24px;height:24px;' />");
+                            }
+                        }
+                    })
+                } else {
+
+                }
+
+            });
+
+            $("#printbjformBtn").click(function () {
+                var selid = $("#bjformtable").getGridParam('selrow');
+
+                if (selid == null) {
+                    alert("请选择报检单");
+                    return;
+                }
+
+                var bjcode = $("#bjformtable").jqGrid('getCell', selid, 'code');
+
+                var pathname = window.document.location.pathname;
+                if (pathname.length == 1) {
+                    pathname = "";
+                }
+
+                window.location.href = pathname + "/BjReport?code=" + bjcode;
+            });
+
+            function showCheckratePercent(cellvalue, options, rowdata) {
+                return rowdata.checkrate * 100 + "%";
+            };
+
+            function showPassratePercent(cellvalue, options, rowdata) {
+                return rowdata.passrate * 100 + "%";
+            };
+
+            $("#bjformdetails").jqGrid({
+                url: '',
+                datatype: "json",
+                mtype: 'GET',
+                colNames: ['材料编码', '材料名称', '规格', '单位', '采购数', '报检数', '检验率', '报检合格数', '判定合格数', '采购合格率', '检验日期'],
+                colModel: [
+                { name: 'pcode', index: 'pcode', width: 100, edittype: "select", editable: true },
+                { name: 'pdesc', index: 'pdesc', width: 50, editable: false },
+                { name: 'size', index: 'size', width: 180, editable: false },
+                { name: 'unit', index: 'unit', width: 80, editable: false },
+                { name: 'purchaseamount', index: 'purchaseamount', width: 80, editable: true },
+                { name: 'checkamount', index: 'checkamount', width: 80, editable: true },
+                { name: 'checkrate', index: 'checkrate', width: 50, editable: false, formatter: showCheckratePercent },
+                { name: 'passamount', index: 'passamount', width: 50, editable: false },
+                { name: 'finalpassamount', index: 'finalpassamount', width: 50, editable: false },
+                { name: 'passrate', index: 'passrate', width: 50, editable: false, formatter: showPassratePercent },
+                { name: 'checkdate', index: 'checkdate', width: 50, editable: false }
+                ],
+                pager: '#bjformdetailspager',
+                rowNum: 10,
+                caption: "报检单明细",
+                multiselect: true
+            });
+
+
+            $("#BJproduct").select2({
+                placeholder: "输入材料搜索",
+                ajax: {
+                    url: "Qcform/SearchStockinfo",
+                    dataType: 'json',
+                    data: function (params) {
+                        return {
+                            q: params.term,
+                            page: params.page
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 3
+
+
+            });
+
+
+        });
+
+        function changeData() {
+            var v = $("#BJproduct").val();
+            var url = "Qcform/GetStockinfoDetail?q=" + v;
+
+            $.getJSON(url, function (data) {
+                $.each(data, function (i, value) {
+                    $("#pcode").val(value.pcode);
+                    $("#pdesc").val(value.desc);
+                    $("#size").val(value.size);
+                    $("#unit").val(value.unit);
+                });
+            });
+
+            $("#BJproduct").empty();
+
+        }
+
+        function AddBjProduct() {
+            var pcode = $("#pcode").val();
+            var pdesc = $("#pdesc").val();
+            var psize = $("#size").val();
+            var punit = $("#unit").val();
+            var ptype;
+
+            var selid = $("#bjformtable").jqGrid('getGridParam', 'selrow');
+            var bjformdata = $("#bjformtable").jqGrid('getRowData', selid);
+            var bjformcode = bjformdata.code;
+            var bjformtype = bjformdata.type;
+
+            if (bjformcode == undefined) {
+                alert("请先选择报检单号");
+                return;
+            }
+
+            if (bjformtype == '材料' && pcode == '') {
+                alert("请选择报检材料");
+                $("#pcode").focus();
+                return;
+            }
+
+            if (bjformtype == '杂项' && pdesc == '') {
+                alert("请输入报检材料");
+                $("#pdesc").focus();
+                return;
+            }
+
+
+
+            var checkamount = $("#checkamount").val();
+
+
+            if (checkamount == '') {
+                alert("请输入报检数量");
+                $("#checkamount").focus();
+                return;
+            }
+
+            if ($('#bjformtable').jqGrid('getCell', selid, 'status') != "新建") {
+                alert("只可向新建状态检单内添加材料");
+                return;
+            }
+
+            if (bjformtype == '材料') {
+                ptype = '80';
+            } else {
+                ptype = '82';
+            }
+            
+
+
+            $.ajax({
+                type: "GET",
+                url: "Qcform/AddBjFormDetail",
+                async: false,
+                datatype: "JSON",
+                data: {
+                    code: bjformcode,
+                    ptype:ptype,
+                    pcode: pcode,
+                    pdesc: pdesc,
+                    psize: psize,
+                    punit: punit,
+                    puramount: checkamount
+                },
+                success: function (data) {
+
+                    $("#bjformdetails").jqGrid('setGridParam', { url: "Qcform/GetBjformDetail?code=" + bjformcode+"&type="+bjformtype, page: 1 });
+                    $("#bjformdetails").jqGrid('setCaption', "报检单号:" + bjformcode).trigger('reloadGrid');
+
+                }
+            })
+
+            $("#pcode").val('');
+            $("#pdesc").val('');
+            $("#size").val('');
+            $("#unit").val('');
+            $("#checkamount").val('');
+
+
+//            $("#bjformdetails").jqGrid('setGridParam', { url: "Qcform/GetBjformDetail?code=" + bjformcode, page: 1 });
+  //          $("#bjformdetails").jqGrid('setCaption', "报检单号:" + bjformcode).trigger('reloadGrid');
+
+        }
+
+        function delbjformdetail() {
+            var selbjformid = $("#bjformtable").jqGrid('getGridParam', 'selrow');
+
+            if (selbjformid == undefined) {
+                alert("请选择报检单号");
+                return;
+            }
+
+            if ($('#bjformtable').jqGrid('getCell', selbjformid, 'status') != "新建") {
+                alert("只可删除新建状态的报检单内材料");
+                return;
+            }
+
+            var bjformdata = $("#bjformtable").jqGrid('getRowData', selbjformid);
+            var bjformcode = bjformdata.code;
+            var bjformtype = bjformdata.type;
+
+            var selid = $('#bjformdetails').jqGrid('getGridParam', 'selarrrow');
+
+            if (selid.length == 0) {
+                alert("请选择材料");
+                return;
+            }
+
+            var pcodes = new Array();
+
+            $.each(selid, function (i, value) {
+                if (bjformtype == "材料") {
+                    pcodes.push($('#bjformdetails').jqGrid('getCell', value, 'pcode'));
+                } else {
+                    pcodes.push($('#bjformdetails').jqGrid('getCell', value, 'pdesc'));
+                }
+
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "Qcform/DelBjFormDetail",
+                async: false,
+                datatype: "JSON",
+                data: {
+                    code: bjformcode,
+                    type: bjformtype,
+                    pcode: pcodes.join('|')
+                },
+                success: function (data) {
+
+                    $("#bjformdetails").jqGrid('setGridParam', { url: "Qcform/GetBjformDetail?code=" + bjformcode+"&type="+bjformtype, page: 1 });
+                    $("#bjformdetails").jqGrid('setCaption', "报检单号:" + bjformcode).trigger('reloadGrid');
+
+                }
+            })
+
+        }
+
+
+        function onlyNumber(obj) {
+            var t = obj.value.charAt(0);
+            obj.value = obj.value.replace(/[^\d\.]/g, '');
+            obj.value = obj.value.replace(/^\./g, '');
+            obj.value = obj.value.replace(/\.{2,}/g, '.');
+            obj.value = obj.value.replace('.', '$#$').replace(/\./g, '').replace('$#$', '.');
+            if (t == '-') { obj.value = '-' + obj.value; }
+        }
+
+        function logout() {
+                $.ajax({
+                    type: "GET",
+                    url: "QcForm/LogoutProc",
+                    async: false,
+                    datatype: "JSON",
+                    success: function (data) {
+                        var resdata = eval("(" + data + ")");
+                        window.location.href = resdata.logouturl;
+                    }
+                });
+
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>

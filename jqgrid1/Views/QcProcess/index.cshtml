@@ -1,0 +1,301 @@
+﻿
+@{
+    ViewBag.Title = "index";
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>广州力恒盛电子有限公司 </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <meta http-equiv="imagetoolbar" content="no" />
+    <link rel="stylesheet" href="~/styles/layout.css" type="text/css" />
+    <link href="~/styles/ui.jqgrid.css" rel="stylesheet" />
+    <link href="~/styles/jquery-ui-1.10.4.custom.min.css" rel="stylesheet" />
+    <link href="~/styles/select2.min.css" rel="stylesheet" />
+    <link href="~/Scripts/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/Scripts/JQGrid/jquery-1.11.0.min.js"></script>
+    <script src="~/Scripts/JQGrid/jquery.jqGrid.min.js"></script>
+    <script src="~/Scripts/JQGrid/grid.locale-cn.js"></script>
+    <script src="~/Scripts/layer/layer.js"></script>
+    <script src="~/Scripts/layui/layui.all.js"></script>
+</head>
+
+<body id="top">
+    <!-- ####################################################################################################### -->
+    <div class="wrapper">
+        <div id="header">
+            <div class="fl_left">
+                <h1><a href="#"><strong>力</strong>恒盛电子 <strong>电子报检单管理系统</strong></a></h1>
+                <p>广州力恒盛电子有限公司</p>
+            </div>
+            <br class="clear" />
+        </div>
+    </div>
+    <div class="wrapper col2">
+        <div id="topbar">
+            <div id="topnav">
+                <ul>
+                    <li class="active"><a href="">登陆：</a></li>
+                    <li class="active"><input type="text" id="loginuser" readonly="readonly" /></li>
+                    <li class="active"></li>
+                    <li class="active"></li>
+                    <li class="active"></li>
+                    <li class="active"></li>
+                    <li class="active">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+                    <li class="active"><input type="button" id="LogoutBtn" value="退出" onclick="logout()" style="width:100px" /></li>
+                </ul>
+            </div>
+            <div id="search">
+            </div>
+            <br class="clear" />
+        </div>
+    </div>
+    <div class="wrapper">
+        <div class="container">
+            <div class="content">
+                <table id="bjformtable"></table>
+                <div id="bjformtablePage"></div>
+                <input type="hidden" id="qcstaffBtn" value="分派报检单" onclick="editqcstaff()"  />
+            </div>
+            <div id="search">
+            </div>
+            <br />
+            <div class="content">
+                <table id="bjformdetails"></table>
+                <div id="bjformdetailspager"></div>
+            </div>
+        </div>
+        <br class="clear" />
+    </div>
+    <div class="wrapper col8">
+        <div id="copyright">
+            <p class="fl_left">Guangzhou LHS Electric Co.,Ltd Copyright &copy; 2017 - All Rights Reserved - <a href="#">By Deric Xie</a></p>
+            <br class="clear" />
+        </div>
+    </div>
+    <script type="text/javascript">
+
+   $(document).ready(function () {
+
+       var role;
+       var href = window.document.location.href;
+       var replacetxt = "Qcprocess";
+       href = href.replace(replacetxt, "");
+
+
+        $.ajax({
+            type: "GET",
+            url: "QcProcess/GetcurrentUser",
+            async: false,
+            datatype: "JSON",
+            data: {
+            },
+            success: function (data) {
+                var resdata = eval("(" + data + ")");
+                role = resdata.role;
+                $("#loginuser").val(resdata.username + "  " + resdata.chinesename);
+                if (resdata.role == '0')
+                    $("#qcstaffBtn").attr("type", "button");
+            }
+        });
+
+        function alarmFormatter(cellvalue, options, rowdata) {
+            var returnstr;
+            switch (rowdata.status) {
+                case "新建":
+                    returnstr = ' <img src="'+href+'icons/add.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                    break;
+                case "存档":
+                    returnstr = ' <img src="'+href+'icons/87-drawer.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                    break;
+                case "检验中":
+                    returnstr = ' <img src="'+href+'icons/medium_priority.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+                    break;
+                default:
+                    returnstr = ' <img src="'+href+'icons/67-info.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px;" />';
+            }
+            return returnstr
+        };
+
+        function specIconLink(cellvalue, options, rowdata) {
+            var returnstr;
+            if (role == "99") {
+                returnstr = rowdata.code + '<img src="'+href+'icons/2-warning.png" id="img' + rowdata.Id + '"  style="width:24px;height:24px" onclick="specForm()" />';
+            } else {
+                returnstr = rowdata.code;
+            }
+            return returnstr;
+        };
+
+        function setBjfromType(cellvalue, options, rowdata) {
+            var returnstr;
+            switch (rowdata.type) {
+                case "80":
+                    returnstr = "材料";
+                    break;
+                case "82":
+                    returnstr = "杂项";
+                    break;
+                default:
+                    returnstr = rowdata.type;
+                    break;
+            }
+            return returnstr;
+        };
+
+        function setCodeUrgentRed(rowId, val, rawObject, cm, rdata) {
+            if (rawObject.urgent == '1') {
+                return "style='color:red'";
+            }
+        };
+
+
+            $("#bjformtable").jqGrid({
+                url: 'QcProcess/GetQcProcessFormInfo',
+                datatype: "json",
+                mtype: 'GET',
+                colNames: ['   ', '优先级', '报检单号', '类别', '制单人', '采购员', '供货单位', '质检主管', '质检员', '状态', '生成日期'],
+                colModel: [
+                { name: 'icon', index: 'icon', width: 30, align: "center", sortable: false, editable: false, formatter: alarmFormatter },
+                { name: 'urgent', index: 'urgent', edittype: 'select', editable: false, hidden: true},
+                { name: 'code', index: 'code', width: 180, edittype: 'select', editable: false, cellattr: setCodeUrgentRed,formatter:specIconLink },
+                { name: 'type', index: 'type', width: 50, edittype: "select", editable: false, formatter: setBjfromType },
+                { name: 'maker', index: 'make', width: 100, edittype: "select", editable: false },
+                { name: 'buyer', index: 'buyer', width: 50, editable: false },
+                { name: 'supplier', index: 'supplier', width: 180, editable: false },
+                { name: 'qcmanager', index: 'qcmanager', width: 80, editable: false },
+                { name: 'qcstaff', index: 'qcstaff', width: 80, editable: false },
+                { name: 'status', index: 'status', width: 50, edittype: "select", editable: false, editoptions: { value: "1:待检;2:检验中;4:存档" } },
+                { name: 'makedate', index: 'makedate', width: 180, edittype: "select", editable: false }
+                ],
+                onSelectRow: function (ids) {
+                    var bjformdata;
+                    var bjformcode;
+                    if (ids != null) {
+                        bjformdata = $("#bjformtable").jqGrid('getRowData', ids);
+                        bjformcode = bjformdata.code.substr(0,12);
+                        bjformtype = bjformdata.type;
+                        $("#bjformdetails").jqGrid('setGridParam', { url: "QcProcess/GetBjformDetail?code=" + bjformcode+"&type="+bjformtype, page: 1 });
+                        $("#bjformdetails").jqGrid('setCaption', "报检单号:" + bjformcode).trigger('reloadGrid');
+                        if (bjformtype == "杂项") {
+                            $("#bjformdetails").hideCol('pcode').trigger('reloadGrid');
+                        } else {
+                            $("#bjformdetails").showCol('pcode').trigger('reloadGrid');
+                        }
+                    }
+                },
+
+                rowNum: 10,
+                loadonce: true,
+                pager: '#bjformtablePage',
+                viewrecords: true,
+                caption: "报检单列表",
+                editurl: 'Qcprocess/EditDataFromStockinfo'
+            });
+
+
+            function showCheckratePercent(cellvalue, options, rowdata) {
+                return rowdata.checkrate * 100 + "%";
+            };
+
+            function showPassratePercent(cellvalue, options, rowdata) {
+                return rowdata.passrate * 100 + "%";
+            };
+
+        $("#bjformdetails").jqGrid({
+            url: '',
+            datatype: "json",
+            mtype: 'GET',
+            colNames: ['材料编码', '材料名称', '规格', '单位', '采购数', '报检数', '检验率', '报检合格数', '判定合格数', '采购合格率', '检验日期'],
+            colModel: [
+            { name: 'pcode', index: 'pcode', width: 100, edittype: "select", editable: true },
+            { name: 'pdesc', index: 'pdesc', width: 50, editable: false },
+            { name: 'size', index: 'size', width: 180, editable: false },
+            { name: 'unit', index: 'unit', width: 80, editable: false },
+            { name: 'purchaseamount', index: 'purchaseamount', width: 80, editable: true },
+            { name: 'checkamount', index: 'checkamount', width: 80, editable: true },
+            { name: 'checkrate', index: 'checkrate', width: 50, editable: false, formatter: showCheckratePercent },
+            { name: 'passamount', index: 'passamount', width: 50, editable: false },
+            { name: 'finalpassamount', index: 'finalpassamount', width: 50, editable: false },
+            { name: 'passrate', index: 'passrate', width: 50, editable: false, formatter: showPassratePercent },
+            { name: 'checkdate', index: 'checkdate', width: 50, editable: false }
+            ],
+            onSelectRow: function (ids) {
+                layer.open({
+                    type: 2,
+                    area: ['1000px', '700px'],
+                    content: 'editqcitem'
+                });
+            },
+            pager: '#bjformdetailspager',
+            rowNum: 10,
+            caption: "报检单明细",
+            multiselect: false
+        });
+     });
+        
+
+        function editqcstaff() {
+            var selid = $("#bjformtable").jqGrid('getGridParam', 'selrow');
+
+            if (selid == undefined) {
+                alert("请选择报检单");
+                return;
+            }
+
+
+            $("#bjformtable").setColProp('icon', { editable: true });
+            $("#bjformtable").setColProp('qcmanager', { editable: true });
+            $("#bjformtable").setColProp('qcstaff', { editable: true });
+            $("#bjformtable").setColProp('status', { editable: true });
+
+            $("#bjformtable").setColProp('icon', { edittype: "text", hidden:true });
+            $("#bjformtable").setColProp('qcmanager', { edittype: "select", editoptions: { dataUrl: "Qcprocess/GetQcStaff?staff=0" } });
+            $("#bjformtable").setColProp('qcstaff', { edittype: "select", editoptions: { dataUrl: "Qcprocess/GetQcStaff?staff=1" } });
+            $("#bjformtable").setColProp('status', { edittype: "select", editoptions: { dataUrl: "Qcprocess/GetStatusForQc" } });
+            $("#bjformtable").jqGrid('editGridRow', selid, {
+                onclickSubmit: function (params, postdata) {
+                    var dgrv = $("#bjformtable").getGridParam('selrow');
+                    var code = $("#bjformtable").getCell(dgrv, "code");
+                    return { "code": code };
+                },
+                closeAfterEdit: true,
+                reloadAfterSubmit: false
+        });
+
+
+        };
+
+
+
+        function specForm() {
+            var selid = $("#bjformtable").jqGrid('getGridParam', 'selrow');
+            bjformdata = $("#bjformtable").jqGrid('getRowData', selid);
+            bjformcode = bjformdata.code.substr(0, 12);
+            layer.open({
+                type: 2,
+                area: ['1000px', '620px'],
+                content: 'QcFormspec'
+            });
+        };
+
+
+        function logout() {
+            $.ajax({
+                type: "GET",
+                url: "QcProcess/LogoutProc",
+                async: false,
+                datatype: "JSON",
+                success: function (data) {
+                    var resdata = eval("(" + data + ")");
+                    window.location.href = resdata.logouturl;
+                }
+            });
+        };
+
+        
+    </script>
+</body>
+
+</html>
